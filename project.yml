@@ -1,0 +1,85 @@
+name: OpenInTerminal
+options:
+  deploymentTarget:
+    macOS: "12.0"
+  xcodeVersion: "27.0"
+settings:
+  base:
+    CLANG_ENABLE_OBJC_ARC: YES
+    CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF: YES
+    MACOSX_DEPLOYMENT_TARGET: "12.0"
+    ARCHS: "arm64 x86_64"
+    ONLY_ACTIVE_ARCH: NO
+    CODE_SIGNING_ALLOWED: NO
+    ENABLE_HARDENED_RUNTIME: YES
+    HEADER_SEARCH_PATHS: "$(SRCROOT)/native/Shared"
+    MARKETING_VERSION: "2.0.0"
+    CURRENT_PROJECT_VERSION: "2.0.0"
+    COMBINE_HIDPI_IMAGES: YES
+targets:
+  OpenInTerminal:
+    type: application
+    platform: macOS
+    sources:
+      - path: native/App
+        excludes: ["Info.plist", "App.entitlements"]
+      - path: native/Shared
+      - path: native/Resources
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_NAME: "Open in Terminal"
+        PRODUCT_BUNDLE_IDENTIFIER: io.openinterminal.app
+        CODE_SIGN_ENTITLEMENTS: native/App/App.entitlements
+    info:
+      path: native/App/Info.plist
+      properties:
+        CFBundleDisplayName: Open in Terminal
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        LSUIElement: true
+        NSHighResolutionCapable: true
+        NSPrincipalClass: NSApplication
+        NSAppleEventsUsageDescription: Open in Terminal uses Terminal automation only when you choose Open in New Terminal Window.
+        CFBundleURLTypes:
+          - CFBundleURLName: io.openinterminal.request
+            CFBundleTypeRole: Viewer
+            CFBundleURLSchemes: [openinterminal-app]
+    dependencies:
+      - target: FinderExtension
+        embed: true
+      - sdk: Cocoa.framework
+      - sdk: FinderSync.framework
+  FinderExtension:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: native/FinderExtension
+        excludes: ["Info.plist", "Extension.entitlements"]
+      - path: native/Shared
+      - path: native/Resources
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_NAME: FinderExtension
+        PRODUCT_BUNDLE_IDENTIFIER: io.openinterminal.app.FinderExtension
+        CODE_SIGN_ENTITLEMENTS: native/FinderExtension/Extension.entitlements
+        APPLICATION_EXTENSION_API_ONLY: YES
+        SKIP_INSTALL: YES
+    info:
+      path: native/FinderExtension/Info.plist
+      properties:
+        CFBundleDisplayName: Open in Terminal
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.FinderSync
+          NSExtensionPrincipalClass: OITFinderSync
+    dependencies:
+      - sdk: Cocoa.framework
+      - sdk: FinderSync.framework
+schemes:
+  OpenInTerminal:
+    build:
+      targets:
+        OpenInTerminal: all

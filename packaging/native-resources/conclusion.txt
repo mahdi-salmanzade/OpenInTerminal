@@ -1,0 +1,11 @@
+One more step: enable the Finder extension
+
+1. Open “Open in Terminal” from Applications.
+2. Click “Enable Finder Extension” and turn on Open in Terminal in the settings pane.
+3. Right-click a folder in Finder and look for Open in Terminal and Open in New Terminal Window in the main menu.
+
+macOS may ask to allow Open in Terminal to control Terminal when you first use the new-window action. The ordinary action does not require this automation permission.
+
+If you installed the earlier Services-only version, remove its “Open in Terminal.workflow” from /Library/Services or ~/Library/Services to avoid keeping the old submenu entry.
+
+To uninstall, disable the extension and move Open in Terminal.app from Applications to the Trash. No login item or background daemon is installed.

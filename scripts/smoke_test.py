@@ -1,31 +1,30 @@
 #!/usr/bin/env python3
-"""Run the packaged workflow once; this deliberately opens a Terminal window."""
-
+"""Open the native setup app or submit a test-folder action through Launch Services."""
 import argparse
 import subprocess
-import zipfile
+from pathlib import Path
+from urllib.parse import urlencode
 
 from build import NAME, ROOT
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--launch-terminal", action="store_true", required=True,
-                        help="Confirm that the test should open Terminal")
-    parser.parse_args()
-    version = (ROOT / "VERSION").read_text().strip()
-    archive = ROOT / "dist" / ("OpenInTerminal-%s-workflow.zip" % version)
-    destination = ROOT / "build/smoke"
-    destination.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(archive) as workflow:
-        workflow.extractall(destination)
-    folder = destination / "Folder with spaces and 'quotes' 日本語"
-    folder.mkdir(exist_ok=True)
-    print("Expected working directory: " + str(folder), flush=True)
-    subprocess.run(["/usr/bin/automator", "-v", "-i", str(folder),
-                    str(destination / (NAME + ".workflow"))], check=True)
-    print("Workflow completed. Run pwd in the opened Terminal to verify its working directory.")
-    print("The service was not installed or registered in Finder.")
+    parser.add_argument("--launch-app", action="store_true", required=True,
+                        help="Acknowledge that this test opens the app and possibly Terminal")
+    parser.add_argument("--app", type=Path, default=ROOT / "build" / (NAME + ".app"))
+    parser.add_argument("--mode", choices=("setup", "default", "new-window"), default="setup")
+    args = parser.parse_args()
+    command = ["/usr/bin/open", "-a", str(args.app.resolve())]
+    if args.mode != "setup":
+        folder = ROOT / "build/smoke" / "Folder with spaces and 'quotes' 日本語"
+        folder.mkdir(parents=True, exist_ok=True)
+        request = "openinterminal-app://open?" + urlencode([
+            ("version", "1"), ("mode", args.mode), ("folder", folder.as_uri() + "/")])
+        command.append(request)
+        print("Expected Terminal working directory: " + str(folder), flush=True)
+    subprocess.run(command, check=True)
+    print("Launch Services accepted the request. Check the app/Finder and Terminal for the result.")
 
 
 if __name__ == "__main__":

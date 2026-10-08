@@ -1,98 +1,100 @@
 # Open in Terminal
 
-A macOS installer that adds **Open in Terminal** to Finder's folder Services menu.
-Select one or more folders, right-click, and choose **Services → Open in Terminal**.
-Some releases also expose the workflow in Quick Actions. macOS controls menu placement;
-this project does not guarantee a top-level context-menu item or an action when clicking empty space.
+A native macOS app with a Finder extension that adds two folder actions to the right-click menu:
 
-## Install
+- **Open in Terminal** opens the selected folders using Terminal's normal window/tab behavior.
+- **Open in New Terminal Window** requests a new Terminal window for each selected folder.
 
-1. Open `dist/OpenInTerminal-1.0.0.pkg` and follow Installer's instructions.
-2. Right-click a folder in Finder and choose **Services → Open in Terminal**.
-3. If missing, enable **Open in Terminal** under **Keyboard → Keyboard Shortcuts → Services**
-   in System Settings or System Preferences. Log out and back in if the service has not appeared.
+The menu uses the supplied Terminal icons, bundled as vector PDFs and fitted into square template
+images so Finder preserves their proportions. The extension handles folder
+selections, folder backgrounds, and sidebar folders when Finder supplies those contexts.
+Files and mixed file/folder selections do not receive the actions.
 
-The installer adds `/Library/Services/Open in Terminal.workflow` for all users and requires
-administrator authentication. It installs no background process, login item, or compiled helper.
-Each selected directory is sent to Apple's Terminal; Terminal controls window/tab behavior.
+Version **2.0.0** is a development build. The app and both Finder menu entries have been observed on
+macOS 26.6.2; see [the validation record](TESTING.md) for the remaining Terminal and release checks.
+A public binary release has not been published.
 
-The default package is an **unsigned development build**, not a signed, notarized public release.
-Downloaded unsigned installers may be blocked by Gatekeeper. See the release instructions below.
+## Install and enable
 
-For an installation just for your account, extract `dist/OpenInTerminal-1.0.0-workflow.zip`
-and open the `.workflow` file to use macOS's service installer, or copy it to `~/Library/Services/`.
-Install either the system-wide package or the per-user workflow to avoid duplicate menu entries.
+1. Build the project, then open `dist/OpenInTerminal-2.0.0.pkg`. Installer places
+   **Open in Terminal.app** in `/Applications` and requires administrator authentication.
+   Alternatively, extract `dist/OpenInTerminal-2.0.0-app.zip` and move the app to `/Applications`.
+2. Open **Open in Terminal** from Applications.
+3. Click **Enable Finder Extension…** and enable **Open in Terminal** in the macOS extension settings.
+4. Right-click a folder in Finder and choose either action. Finder controls their position in the menu.
 
-## Compatibility
+The first **Open in New Terminal Window** request may ask permission for Open in Terminal to control
+Terminal. Allow it for that action. Manage permission under **Privacy & Security → Automation** in
+System Settings, or **Security & Privacy → Privacy → Automation** in System Preferences on Monterey.
+The ordinary **Open in Terminal** action does not use Terminal automation.
 
-| System | Status |
-| --- | --- |
-| macOS 26.6.2, Apple Silicon | Build, package inspection, and Automator execution pass; Finder installation still needs a manual check |
-| OS X 10.6.8 through other macOS releases | Compatibility target; not yet verified on those systems |
-| Intel Macs, including 32-bit Snow Leopard systems | Installer declares i386 and x86_64; historical hardware testing required |
-| Apple Silicon | Installer declares arm64; payload needs no Rosetta |
-| OS X 10.0–10.5, PowerPC, Classic Mac OS | Not supported by this package |
-| Future macOS versions | Must be retested; no guarantee |
+The default build has an **ad-hoc signed app and an unsigned installer**. It is not a notarized public
+release and downloaded copies may be blocked by Gatekeeper. Developer ID credentials are not included.
+See [signing and Homebrew distribution](docs/HOMEBREW.md).
 
-“All macOS versions ever” cannot be honestly guaranteed with one integration. Automator Services
-provide a broad supported mechanism. This installer starts at **10.6.8**, the final Snow Leopard release.
-The payload is XML plus a Bash 3.2-compatible script using built-in `open`; Python is used only to build and test.
-No AppleScript command is constructed from a filename. Files and executable scripts are rejected.
+## Compatibility and limitations
 
-Apple documents [script-backed contextual services](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/MakeaSystem-WideService.html)
-and [current Quick Actions](https://support.apple.com/guide/automator/use-quick-action-workflows-aut73234890a/mac).
-Finder Sync starts at 10.10 and Apple says it is
-[not a general-purpose Finder UI modification mechanism](https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/Finder.html).
-The package uses legacy payload compression and declares the OS floor with
-[Installer's distribution schema](https://developer.apple.com/library/archive/documentation/DeveloperTools/Reference/DistributionDefinitionRef/Chapters/Distribution_XML_Ref.html).
+The native build targets **macOS 12 Monterey or later**, on both Intel and Apple Silicon, without
+Rosetta. This is the deployment floor supported by the current Xcode 27 build. Older systems and
+future macOS versions are not covered by a claim of universal compatibility.
 
-Recent macOS releases also provide Apple's own Terminal commands from Finder's path bar;
-see [Apple's Terminal guide](https://support.apple.com/guide/terminal/open-new-terminal-windows-and-tabs-trmlb20c7888/mac).
-This project supplies a distributable, explicitly named folder service.
+Finder Sync exposes contextual menus for registered folder locations; Apple describes it as a
+mechanism intended for synchronization apps, not a general Finder customization API.
+[Apple's Finder Sync guide](https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/Finder.html)
+documents the folder, background, and sidebar contexts. Menu placement is controlled by Finder.
+Search results, virtual locations, cloud-managed folders, and interactions with other Finder
+extensions need separate testing; the actions cannot be guaranteed in every Finder view.
+
+The extension registers local and mounted volume roots without scanning their contents. The normal
+action passes folder URLs directly to Terminal through `NSWorkspace`. The new-window action uses a
+fixed AppleScript with base64-encoded paths supplied as data, so Terminal receives no raw filename
+control characters. The app adds no login item; macOS manages the extension.
 
 ## Build and verify
 
-Use a current macOS development machine with Python 3.9+ and Apple's `pkgbuild`, `productbuild`, and `ditto`.
-There are no third-party dependencies.
+Use macOS with **Xcode 27**, its command-line tools selected, and **Python 3.9+**:
 
 ```sh
 make verify
 ```
 
-Outputs are `dist/OpenInTerminal-1.0.0.pkg`, the portable workflow ZIP, and `dist/SHA256SUMS`.
-Set the release version in `VERSION`. Builds use a temporary staging directory and never install the service.
-Tests exercise literal filename handling, failures, and the actual packaged payload. See `TESTING.md`
-for the manual Finder and older-system test matrix.
+This builds the app and extension, runs native request validation, nine command-safety regressions,
+and the retained legacy shell tests, then inspects the generated installer. The command-safety
+tests use an inert AppleScript harness; they do not open Terminal. Verification does not install
+the app or enable the extension.
+Outputs are:
 
-To run the packaged action without installing it (this opens Terminal):
+- `dist/OpenInTerminal-2.0.0.pkg`
+- `dist/OpenInTerminal-2.0.0-app.zip`
+- `dist/SHA256SUMS`
+- `build/Open in Terminal.app` for local inspection
+
+The Objective-C code uses ARC. The checked-in `OpenInTerminal.xcodeproj` is sufficient to build;
+XcodeGen is needed only after changing `project.yml`, to regenerate the project with `make project`.
+Set the release version in `VERSION`. Manual installation and Finder checks are in [TESTING.md](TESTING.md).
+
+## Legacy Services build
+
+The optional **1.0.0** workflow remains available for older Macs:
 
 ```sh
-python3 scripts/smoke_test.py --launch-terminal
+make build-legacy
+python3 scripts/verify_package_legacy.py
 ```
 
-The script creates a test directory with spaces, quotes, and Japanese characters under `build/smoke/`.
-Check `pwd` in the resulting Terminal window against the path printed by the test.
-
-## Sign a public release
-
-A Developer ID Installer certificate and Apple notarization credentials are required.
-This project does not include signing credentials.
-
-```sh
-python3 scripts/build.py --sign 'Developer ID Installer: YOUR NAME (TEAMID)'
-xcrun notarytool submit dist/OpenInTerminal-1.0.0.pkg --keychain-profile YOUR_PROFILE --wait
-xcrun stapler staple dist/OpenInTerminal-1.0.0.pkg
-pkgutil --check-signature dist/OpenInTerminal-1.0.0.pkg
-spctl --assess --type install --verbose dist/OpenInTerminal-1.0.0.pkg
-```
-
-Recreate `SHA256SUMS` after stapling because stapling changes the package bytes.
-Test downloaded packages on each claimed supported OS; modern signatures/notarization do not
-establish compatibility with historical systems.
+It targets OS X **10.6.8 onward**, but historical system compatibility remains unverified. It adds
+**Services → Open in Terminal**, with no separate new-window action. Its version is in `LEGACY_VERSION`
+and its installer, workflow ZIP, and checksums are written to `dist/legacy/`.
+The legacy installer places `Open in Terminal.workflow` in `/Library/Services`; the ZIP can instead
+be installed in `~/Library/Services` for one user. It is separate from the native app and is not
+automatically removed when installing 2.0.0.
 
 ## Uninstall
 
-In Finder, choose **Go → Go to Folder**, enter `/Library/Services/`, and move only
-`Open in Terminal.workflow` to the Trash. Authenticate if asked. For a per-user installation,
-use `~/Library/Services/` instead. Log out and back in if the menu entry remains cached.
-The package receipt may remain; it has no runtime behavior.
+Disable **Open in Terminal** in Finder Extensions, quit the app, and move
+`/Applications/Open in Terminal.app` to the Trash. If Finder retains its menu entries, log out and back in.
+The installer receipt `io.openinterminal.app.pkg` may remain; it has no runtime behavior.
+
+To remove a legacy installation, remove only `Open in Terminal.workflow` from `/Library/Services`
+or `~/Library/Services`, depending on how it was installed. Remove the old workflow when migrating
+if you do not want both the native actions and the Services entry.

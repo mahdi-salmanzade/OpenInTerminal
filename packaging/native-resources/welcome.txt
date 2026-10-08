@@ -1,0 +1,12 @@
+Open in Terminal
+
+Add two actions directly to Finder's folder context menu:
+
+  Open in Terminal
+  Open in New Terminal Window
+
+The installer places Open in Terminal.app in Applications. Open it after installation and enable its Finder extension in System Settings (or System Preferences).
+
+Finder controls where the items appear in its menu. They cannot be pinned below “Open in New Tab.” Some locations and folders managed by other extensions may not expose these items.
+
+Compatibility target: macOS 12 and later, on Intel and Apple Silicon. Older supported releases have not been tested. The app does not need Rosetta.
