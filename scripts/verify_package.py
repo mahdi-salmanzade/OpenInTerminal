@@ -46,6 +46,9 @@ def main():
                 "The package contains files outside its application")
         metadata = read_plist(app / "Contents/Info.plist")
         require(metadata["CFBundleIdentifier"] == BUNDLE_ID, "Incorrect app identity")
+        require(metadata.get("CFBundleIconFile") == "Terminal.icns", "Incorrect app icon registration")
+        require((app / "Contents/Resources/Terminal.icns").read_bytes() == (ROOT / "Terminal.icns").read_bytes(),
+                "Missing or changed app icon")
         require(metadata["LSMinimumSystemVersion"] == MINIMUM_OS, "Incorrect app deployment target")
         require(metadata["CFBundleShortVersionString"] == version and metadata["CFBundleVersion"] == version,
                 "App version does not match package version")

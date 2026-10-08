@@ -23,6 +23,8 @@ targets:
     sources:
       - path: native/App
         excludes: ["Info.plist", "App.entitlements"]
+      - path: Terminal.icns
+        buildPhase: resources
       - path: native/Shared
       - path: native/Resources
         buildPhase: resources
@@ -35,6 +37,7 @@ targets:
       path: native/App/Info.plist
       properties:
         CFBundleDisplayName: Open in Terminal
+        CFBundleIconFile: Terminal.icns
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSUIElement: true

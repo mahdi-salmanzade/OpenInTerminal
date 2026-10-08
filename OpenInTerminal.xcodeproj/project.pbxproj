@@ -21,6 +21,7 @@
 		B900B12C8C25C67794028251 /* FinderSync.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8038A48587BA3611C0994738 /* FinderSync.framework */; };
 		DB56322614892F6CDC958B3F /* FinderExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1515ACD029148C24F034C0E6 /* FinderExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EB554F36F36C46C7CEDED2EC /* OITRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 402BC267F39CDA93AA82E28B /* OITRequest.m */; };
+		EC3392373BA5A18859DC04E6 /* Terminal.icns in Resources */ = {isa = PBXBuildFile; fileRef = 716EA680E6336DC0AFA2A8DB /* Terminal.icns */; };
 		F96607AAD4DC6D79E5C88984 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B6CF34EFBA49753504F0A1F /* AppDelegate.m */; };
 		F96F4B42CAB5E6F876B720BB /* apple.terminal.on.rectangle.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 47E70DCDE748B29C02DF9878 /* apple.terminal.on.rectangle.pdf */; };
 /* End PBXBuildFile section */
@@ -58,6 +59,7 @@
 		55AA0880497A5E04CA6FA029 /* OITRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OITRequest.h; sourceTree = "<group>"; };
 		6B08243A31A88C2EB2B83D01 /* FinderSync.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FinderSync.m; sourceTree = "<group>"; };
 		6B6CF34EFBA49753504F0A1F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		716EA680E6336DC0AFA2A8DB /* Terminal.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Terminal.icns; sourceTree = "<group>"; };
 		8038A48587BA3611C0994738 /* FinderSync.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FinderSync.framework; path = System/Library/Frameworks/FinderSync.framework; sourceTree = SDKROOT; };
 		88EE1963464FF819023F6D80 /* OpenInTerminal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenInTerminal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2CE7EE5B91B210403A3CF61 /* OpenNewTerminalWindow.applescript */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.applescript; path = OpenNewTerminalWindow.applescript; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 		747F087D243011AED2F1C54A = {
 			isa = PBXGroup;
 			children = (
+				716EA680E6336DC0AFA2A8DB /* Terminal.icns */,
 				C47D2D5C7D7F8159C9B4F2DF /* App */,
 				3367DDF03D96E2099C4FDA00 /* FinderExtension */,
 				3A947C66760C319904186081 /* Resources */,
@@ -252,6 +255,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				58CB646B6FA667134C6CF361 /* OpenNewTerminalWindow.applescript in Resources */,
+				EC3392373BA5A18859DC04E6 /* Terminal.icns in Resources */,
 				854EF9F74F3A0ADDECD7F9B7 /* apple.terminal.on.rectangle.pdf in Resources */,
 				396C2E48F8A57B2F5A94F891 /* apple.terminal.pdf in Resources */,
 			);
