@@ -1,0 +1,9 @@
+Use Open in Terminal
+
+In Finder, select one or more folders and right-click. Choose Services > Open in Terminal, or look in Quick Actions.
+
+If the action is missing, look for “Open in Terminal” in System Settings (or System Preferences) > Keyboard > Keyboard Shortcuts > Services, and enable it. You may need to log out and log back in once for macOS to discover the service.
+
+Each selected folder opens in Apple's Terminal. The exact window or tab behavior follows Terminal's settings.
+
+To uninstall, remove /Library/Services/Open in Terminal.workflow. Other services and Terminal settings are unaffected.

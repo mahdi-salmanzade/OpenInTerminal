@@ -1,0 +1,9 @@
+Open in Terminal
+
+Add “Open in Terminal” to Finder's folder Services menu.
+
+Select one or more folders, right-click, then choose Services > Open in Terminal. Some macOS versions also show the action under Quick Actions.
+
+This installer adds one workflow to /Library/Services for all users of this Mac. Administrator authentication is required. No background app or login item is installed.
+
+Compatibility target: OS X 10.6.8 and later, on Intel and Apple Silicon. Older releases require testing before compatibility can be confirmed. Future macOS versions are not guaranteed.
